@@ -1,29 +1,672 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Signal / Object specimen sheet for the iPhone 15 Pro interface study.">
-  <title>Specimen Sheet — Signal / Object</title><link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone 15 Pro — Technical Specifications</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            --color-bg: #000;
+            --color-text: #f5f5f7;
+            --color-text-secondary: #86868b;
+            --color-accent: #0071e3;
+            --color-divider: rgba(255,255,255,0.1);
+            --color-card-bg: #1d1d1f;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-apple);
+            background: var(--color-bg);
+            color: var(--color-text);
+            overflow-x: hidden;
+        }
+
+        /* ===== Nav ===== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            height: 48px;
+            background: rgba(0,0,0,0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-inner {
+            width: 100%;
+            max-width: 980px;
+            padding: 0 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--color-accent);
+            text-decoration: none;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+
+        .nav-back:hover { opacity: 0.75; }
+
+        .nav-logo img {
+            height: 22px;
+            width: auto;
+            opacity: 0.9;
+        }
+
+        .nav-title {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+
+        /* ===== Hero ===== */
+        .page-hero {
+            padding: 120px 22px 80px;
+            text-align: center;
+            background: #000;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .page-hero .eyebrow {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 16px;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+            background: linear-gradient(135deg, #fff 0%, #a0a0a5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .page-hero p {
+            font-size: 19px;
+            font-weight: 300;
+            color: var(--color-text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* ===== Specs Layout ===== */
+        .specs-page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 22px 120px;
+        }
+
+        /* ===== Spec Group ===== */
+        .spec-group {
+            margin-bottom: 4px;
+        }
+
+        .spec-group-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 28px 0 20px;
+            border-bottom: 1px solid var(--color-divider);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .spec-group-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(0,113,227,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .spec-group-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--color-accent);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .spec-group-title {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            flex: 1;
+        }
+
+        .spec-group-chevron {
+            width: 20px;
+            height: 20px;
+            stroke: var(--color-text-secondary);
+            fill: none;
+            stroke-width: 2;
+            transition: transform 0.3s ease;
+        }
+
+        .spec-group.open .spec-group-chevron {
+            transform: rotate(180deg);
+        }
+
+        .spec-group-body {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.5s ease;
+        }
+
+        .spec-group.open .spec-group-body {
+            max-height: 2000px;
+        }
+
+        /* ===== Spec Rows ===== */
+        .spec-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 24px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            align-items: start;
+        }
+
+        .spec-row:last-child {
+            border-bottom: none;
+        }
+
+        .spec-row-label {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            color: var(--color-text-secondary);
+            padding-top: 2px;
+        }
+
+        .spec-row-value {
+            font-size: 15px;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .spec-row-value strong {
+            font-weight: 600;
+        }
+
+        .spec-row-value ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .spec-row-value ul li {
+            padding: 3px 0;
+            position: relative;
+            padding-left: 14px;
+        }
+
+        .spec-row-value ul li::before {
+            content: '·';
+            position: absolute;
+            left: 0;
+            color: var(--color-text-secondary);
+        }
+
+        /* ===== Compare Banner ===== */
+        .compare-banner {
+            background: var(--color-card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 60px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .compare-banner-text h3 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 8px;
+        }
+
+        .compare-banner-text p {
+            font-size: 15px;
+            color: var(--color-text-secondary);
+        }
+
+        .compare-banner-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--color-accent);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 980px;
+            font-size: 15px;
+            font-weight: 400;
+            white-space: nowrap;
+            transition: background 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .compare-banner-action:hover {
+            background: #0077ed;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            background: #1d1d1f;
+            padding: 40px 22px;
+            text-align: center;
+            border-top: 1px solid var(--color-divider);
+        }
+
+        .footer-copy {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            font-size: 14px;
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .footer-links a:hover { opacity: 0.75; }
+
+        /* ===== Scroll Animations ===== */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            .spec-row {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+
+            .compare-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="progress-rail" aria-hidden="true"><span></span></div>
-  <header class="site-header"><div class="nav-shell"><a class="wordmark" href="index.html"><span class="wordmark-orb" aria-hidden="true"></span><span>Signal / Object <small>15 Pro study</small></span></a><button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button><nav class="main-nav" aria-label="Primary navigation"><a href="index.html">Object index</a><a href="specs.html" aria-current="page">Specimen sheet</a><a href="gallery.html">Motion archive</a><a href="picture.html">Context</a></nav><span class="nav-status"><i></i>Study active</span></div></header>
-  <main class="page">
-    <section class="measure-hero"><div class="container measure-hero-grid"><div data-reveal><span class="measure-index">Specimen sheet / 02</span><h1>Measure<br>the signal.</h1><p>A compact technical inventory with intentionally separated information bands. Values are retained from the original project as study data, not as a commercial specification page.</p></div><p class="rule-caption" data-reveal data-delay="1">Readout mode / compact<br>Device class / pro</p></div></section>
-    <section class="section"><div class="container"><div class="spec-sheet">
-      <article class="spec-card wide" data-reveal><span class="rule-caption">01 / Display plane</span><strong>6.1-inch Super Retina XDR</strong><p>2556 × 1179 pixels at 460 ppi, with adaptive refresh behavior referenced as a surface-quality study.</p></article>
-      <article class="spec-card" data-reveal data-delay="1"><span class="rule-caption">02 / Silicon</span><strong>A17 Pro</strong><p>Six-core CPU, six-core GPU, and sixteen-core Neural Engine in the original project inventory.</p></article>
-      <article class="spec-card" data-reveal data-delay="2"><span class="rule-caption">03 / Material</span><strong>Titanium<br>frame</strong><p>Aerospace-grade titanium edge, textured matte glass back, and Ceramic Shield front.</p></article>
-      <article class="spec-card" data-reveal><span class="rule-caption">04 / Main capture</span><strong>48 MP</strong><p>Primary camera module paired with 24 mm framing in the original camera study.</p></article>
-      <article class="spec-card" data-reveal data-delay="1"><span class="rule-caption">05 / Wide capture</span><strong>120°</strong><p>12 MP Ultra Wide system with a 120-degree field of view for spatial contrast.</p></article>
-      <article class="spec-card" data-reveal data-delay="2"><span class="rule-caption">06 / Telephoto</span><strong>3×</strong><p>Optical zoom telephoto module, documented as a separate capture-distance state.</p></article>
-      <article class="spec-card wide" data-reveal><span class="rule-caption">07 / Physical register</span><strong>146.6 × 70.6 × 8.25 mm / 187 g</strong><p>The central measurement line used throughout Signal / Object. The dimension informs the material-stage captions and the device-frame motion experiments.</p></article>
-      <article class="spec-card" data-reveal data-delay="1"><span class="rule-caption">08 / Connection</span><strong>USB-C</strong><p>USB 3 support, alongside Wi‑Fi 6E, Bluetooth 5.3, and 5G in the original project reference set.</p></article>
-      <article class="spec-card" data-reveal data-delay="2"><span class="rule-caption">09 / Control</span><strong>Action<br>button</strong><p>A configurable physical input replacing the former mute-switch interaction.</p></article>
-    </div></div></section>
-    <section class="section finish-lab"><div class="container object-index"><div data-reveal><p class="section-label">Supplement / hierarchy</p><h2 class="section-title">One object.<br>Many readings.</h2><p class="section-copy">The technical sheet intentionally avoids purchase logic. Its task is to demonstrate contrast, rhythm, unit hierarchy, and a navigable product-information language.</p></div><figure class="material-stage" data-reveal data-delay="1"><img src="image.png" alt="Close detail of the iPhone camera system"><figcaption class="material-tag"><span>Optical module / reference</span><strong>Camera<br>array</strong></figcaption></figure></div></section>
-  </main>
-  <footer class="site-footer"><div class="footer-shell"><div class="footer-top"><h2 class="footer-title">Evidence, arranged<br>with intent.</h2><p class="footer-note">An independent interface-design study by Yehong Hu. The device and media references do not imply any affiliation with Apple.</p></div><div class="footer-bottom"><span>© 2026 Yehong Hu</span><span>Specimen sheet / Signal / Object</span></div></div></footer>
-  <script src="main.js"></script>
+
+    <!-- Nav -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-back">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M10 3L5 8l5 5"/>
+                </svg>
+                Back
+            </a>
+            <div class="nav-logo">
+                <img src="15 pro logo.png" alt="iPhone 15 Pro">
+            </div>
+            <span class="nav-title">Specifications</span>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="page-hero fade-up">
+        <p class="eyebrow">Technical Specifications</p>
+        <h1>iPhone 15 Pro</h1>
+        <p>Every detail about the most advanced iPhone ever built.</p>
+    </div>
+
+    <!-- Specs Content -->
+    <div class="specs-page">
+
+        <!-- Compare Banner -->
+        <div class="compare-banner fade-up">
+            <div class="compare-banner-text">
+                <h3>Ready to buy?</h3>
+                <p>Choose your storage and finish. Free delivery available.</p>
+            </div>
+            <a href="index.html#pricing" class="compare-banner-action">Shop iPhone 15 Pro</a>
+        </div>
+
+        <!-- Design -->
+        <div class="spec-group open fade-up">
+            <div class="spec-group-header" onclick="toggleGroup(this)">
+                <div class="spec-group-icon">
+                    <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18.5" stroke-linecap="round" stroke-width="2"/></svg>
+                </div>
+                <span class="spec-group-title">Design</span>
+                <svg class="spec-group-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="spec-group-body">
+                <div class="spec-row">
+                    <div class="spec-row-label">Colors</div>
+                    <div class="spec-row-value">
+                        <ul>
+                            <li>Black Titanium</li>
+                            <li>White Titanium</li>
+                            <li>Blue Titanium</li>
+                            <li>Natural Titanium</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Materials</div>
+                    <div class="spec-row-value">Aerospace-grade titanium frame · Ceramic Shield front · Textured matte glass back</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Dimensions</div>
+                    <div class="spec-row-value">146.6 mm × 70.6 mm × 8.25 mm<br>(5.77 in × 2.78 in × 0.32 in)</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Weight</div>
+                    <div class="spec-row-value"><strong>187 g</strong> (6.60 oz) — lightest Pro model ever</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Border Width</div>
+                    <div class="spec-row-value"><strong>1.55 mm</strong> — thinnest border on any iPhone Pro</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Water Resistance</div>
+                    <div class="spec-row-value">IP68 (6 metres for up to 30 minutes)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Display -->
+        <div class="spec-group open fade-up">
+            <div class="spec-group-header" onclick="toggleGroup(this)">
+                <div class="spec-group-icon">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/></svg>
+                </div>
+                <span class="spec-group-title">Display</span>
+                <svg class="spec-group-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="spec-group-body">
+                <div class="spec-row">
+                    <div class="spec-row-label">Type</div>
+                    <div class="spec-row-value"><strong>Super Retina XDR</strong> display with ProMotion</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Size</div>
+                    <div class="spec-row-value"><strong>6.1 inches</strong> (diagonal) all-screen OLED</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Resolution</div>
+                    <div class="spec-row-value">2556 × 1179 pixels at <strong>460 ppi</strong></div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Refresh Rate</div>
+                    <div class="spec-row-value">Adaptive refresh rate up to <strong>120Hz</strong> with ProMotion<br>Always-On display (1Hz minimum)</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Brightness</div>
+                    <div class="spec-row-value">1000 nits typical · 1600 nits peak (HDR) · <strong>2000 nits</strong> peak outdoor</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Features</div>
+                    <div class="spec-row-value">
+                        <ul>
+                            <li>Dynamic Island</li>
+                            <li>HDR display · True Tone · Wide colour (P3)</li>
+                            <li>Haptic Touch · Fingerprint-resistant oleophobic coating</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chip -->
+        <div class="spec-group open fade-up">
+            <div class="spec-group-header" onclick="toggleGroup(this)">
+                <div class="spec-group-icon">
+                    <svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M7 4v-2M12 4v-2M17 4v-2M7 22v-2M12 22v-2M17 22v-2M4 7H2M4 12H2M4 17H2M22 7h-2M22 12h-2M22 17h-2"/></svg>
+                </div>
+                <span class="spec-group-title">Chip</span>
+                <svg class="spec-group-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="spec-group-body">
+                <div class="spec-row">
+                    <div class="spec-row-label">Chip</div>
+                    <div class="spec-row-value"><strong>A17 Pro</strong> chip</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Process</div>
+                    <div class="spec-row-value">Industry-first <strong>3-nanometer</strong> technology</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">CPU</div>
+                    <div class="spec-row-value"><strong>6-core</strong> CPU with 2 performance and 4 efficiency cores</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">GPU</div>
+                    <div class="spec-row-value"><strong>6-core</strong> GPU with hardware ray tracing</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Neural Engine</div>
+                    <div class="spec-row-value"><strong>16-core</strong> Neural Engine — 20% faster than A16 Bionic</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Memory</div>
+                    <div class="spec-row-value">8 GB RAM</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Camera -->
+        <div class="spec-group open fade-up">
+            <div class="spec-group-header" onclick="toggleGroup(this)">
+                <div class="spec-group-icon">
+                    <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                </div>
+                <span class="spec-group-title">Camera System</span>
+                <svg class="spec-group-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="spec-group-body">
+                <div class="spec-row">
+                    <div class="spec-row-label">Main Camera</div>
+                    <div class="spec-row-value"><strong>48MP</strong> · f/1.78 aperture · 24mm focal length · OIS · Photonic Engine</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Ultra Wide</div>
+                    <div class="spec-row-value"><strong>12MP</strong> · f/2.2 aperture · 120° field of view · Macro photography</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Telephoto</div>
+                    <div class="spec-row-value"><strong>12MP</strong> · f/2.8 aperture · 77mm · 3× optical zoom</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Zoom Range</div>
+                    <div class="spec-row-value">0.5× · 1× · 2× · 3× optical · 6× optical quality · up to 15× digital</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Video</div>
+                    <div class="spec-row-value">
+                        <ul>
+                            <li>4K ProRes video recording at 60fps with USB 3</li>
+                            <li>Cinematic mode up to 4K 30fps</li>
+                            <li>Action mode up to 2.8K 60fps</li>
+                            <li>Log video recording</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Front Camera</div>
+                    <div class="spec-row-value"><strong>12MP</strong> TrueDepth · f/1.9 aperture · Autofocus</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connectivity -->
+        <div class="spec-group fade-up">
+            <div class="spec-group-header" onclick="toggleGroup(this)">
+                <div class="spec-group-icon">
+                    <svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
+                </div>
+                <span class="spec-group-title">Connectivity</span>
+                <svg class="spec-group-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="spec-group-body">
+                <div class="spec-row">
+                    <div class="spec-row-label">Cellular</div>
+                    <div class="spec-row-value"><strong>5G</strong> (sub-6GHz and mmWave) · 4G LTE</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Wi-Fi</div>
+                    <div class="spec-row-value"><strong>Wi-Fi 6E</strong> (802.11ax) with 2.4GHz, 5GHz, 6GHz</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Bluetooth</div>
+                    <div class="spec-row-value"><strong>Bluetooth 5.3</strong></div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">NFC</div>
+                    <div class="spec-row-value">NFC with reader mode</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Connector</div>
+                    <div class="spec-row-value"><strong>USB-C</strong> with USB 3 (up to 10Gb/s) · Supports DisplayPort · USB 3 camera · Thunderbolt 3 (up to 40Gb/s)</div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Location</div>
+                    <div class="spec-row-value">Precision dual-frequency GPS · GLONASS · Galileo · BeiDou · QZSS</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Storage -->
+        <div class="spec-group fade-up">
+            <div class="spec-group-header" onclick="toggleGroup(this)">
+                <div class="spec-group-icon">
+                    <svg viewBox="0 0 24 24"><path d="M22 12H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/><line x1="6" y1="16" x2="6.01" y2="16"/><line x1="10" y1="16" x2="10.01" y2="16"/></svg>
+                </div>
+                <span class="spec-group-title">Storage</span>
+                <svg class="spec-group-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="spec-group-body">
+                <div class="spec-row">
+                    <div class="spec-row-label">Capacity Options</div>
+                    <div class="spec-row-value">
+                        <ul>
+                            <li><strong>128 GB</strong> — $1,449</li>
+                            <li><strong>256 GB</strong> — $1,749</li>
+                            <li><strong>512 GB</strong> — $1,949</li>
+                            <li><strong>1 TB</strong> — $2,149</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Power -->
+        <div class="spec-group fade-up">
+            <div class="spec-group-header" onclick="toggleGroup(this)">
+                <div class="spec-group-icon">
+                    <svg viewBox="0 0 24 24"><path d="M5 12H1l4-8v4h14l4 8H5z"/><line x1="19" y1="12" x2="23" y2="12"/></svg>
+                </div>
+                <span class="spec-group-title">Battery & Power</span>
+                <svg class="spec-group-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="spec-group-body">
+                <div class="spec-row">
+                    <div class="spec-row-label">Video Playback</div>
+                    <div class="spec-row-value">Up to <strong>23 hours</strong></div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Video Streaming</div>
+                    <div class="spec-row-value">Up to <strong>20 hours</strong></div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Audio Playback</div>
+                    <div class="spec-row-value">Up to <strong>75 hours</strong></div>
+                </div>
+                <div class="spec-row">
+                    <div class="spec-row-label">Charging</div>
+                    <div class="spec-row-value">MagSafe wireless charging up to 15W · Qi wireless charging up to 7.5W · USB-C wired charging</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom CTA -->
+        <div class="compare-banner fade-up" style="margin-top: 60px">
+            <div class="compare-banner-text">
+                <h3>Explore the full experience.</h3>
+                <p>See the iPhone 15 Pro in action and choose your finish.</p>
+            </div>
+            <a href="gallery.html" class="compare-banner-action">View Gallery</a>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-copy">&copy; 2023 Yehong Hu &nbsp;·&nbsp; 301392896 &nbsp;·&nbsp; COMP-213 Web Interface Design &nbsp;·&nbsp; 2023 Fall &nbsp;·&nbsp; Assignment 3</p>
+        <div class="footer-links">
+            <a href="index.html">Back to Overview</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="picture.html">In Action</a>
+        </div>
+    </footer>
+
+    <script>
+        // Accordion toggle
+        function toggleGroup(header) {
+            const group = header.parentElement;
+            group.classList.toggle('open');
+        }
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>

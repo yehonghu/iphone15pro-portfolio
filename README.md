@@ -1,34 +1,40 @@
-# Signal / Object — iPhone 15 Pro Interface Study
+# iPhone 15 Pro — Product Page
 
-**Signal / Object** is an independent frontend and interaction-design study that reframes an existing iPhone 15 Pro assignment as a spatial product-interface narrative. Instead of reproducing a retail funnel, it uses the project’s original device images, component art, screen compositions, map artefact, and local motion clips to examine material, information hierarchy, and interaction states.
+A fully hand-coded Apple-style product landing page for the iPhone 15 Pro, built as a frontend portfolio project.
 
-**Live site:** [https://yehonghu.github.io/iphone15pro-portfolio/](https://yehonghu.github.io/iphone15pro-portfolio/)
+**Live Demo:** [yehonghu.github.io/iphone15pro-portfolio](https://yehonghu.github.io/iphone15pro-portfolio)
 
-## Routes
+---
 
-| Route | Role |
-| --- | --- |
-| `index.html` | **Object index** — video-led hero, material study, pointer-responsive device plane, interactive titanium finish calibrator, performance signal, and screen evidence. |
-| `specs.html` | **Specimen sheet** — structured technical information arranged as calibrated measurement cards. |
-| `gallery.html` | **Motion archive** — device-frame clip, finish records, camera study, and keyboard-ready lightbox. |
-| `picture.html` | **Context** — interface framing and a retained Canada-map provenance artefact, no longer presented as a store finder. |
+## Pages
 
-## Experience System
+| Page | Description |
+|------|-------------|
+| `index.html` | Main product overview — hero video, design, chip, color picker, specs, pricing, store map |
+| `gallery.html` | Visual gallery — video showcase, four titanium finishes, camera system |
+| `picture.html` | In Action — iPhone mockup with embedded video, color showcase with lightbox |
+| `specs.html` | Full technical specifications — collapsible accordion sections |
 
-| Layer | Implementation |
-| --- | --- |
-| Visual language | Near-black material stage, titanium grey, optical violet, diagnostic green, editorial serif display type, and monospaced technical labels. |
-| Motion | Scroll progress rail, viewport reveals, pointer-responsive hero object, depth-oriented image staging, finish transitions, and muted local video loops. |
-| Existing project evidence | The original product imagery, chip art, display frame, screen composition, map, and two video clips are kept prominent. |
-| Accessibility | Semantic landmarks, descriptive `alt` text, keyboard-closeable lightbox, responsive menu, natural document scrolling, and `prefers-reduced-motion` support. |
-| Stack | Static HTML, shared CSS, and vanilla JavaScript; no build step or framework dependency. |
+## Features
 
-## Positioning
+- Apple SF Pro font stack with precise typographic hierarchy
+- Frosted glass navigation bar (`backdrop-filter: blur`)
+- Scroll-triggered fade-in animations via `IntersectionObserver`
+- Interactive color switcher (Black / White / Blue / Natural Titanium)
+- Embedded video backgrounds and iPhone mockup video player
+- Lightbox image viewer with keyboard support
+- Collapsible spec accordion with SVG icons
+- Responsive layout for mobile and desktop
+- Pure HTML + CSS + Vanilla JS — zero dependencies
 
-This is an independent portfolio study by **Yehong Hu**. Device names and original product media are used for educational and interface-design demonstration only. The site is not affiliated with Apple and contains no pricing, purchasing, carrier, or store-location workflow.
+## Course Info
 
-## Deployment
+- **Course:** COMP-213 Web Interface Design
+- **Section:** 006
+- **Assignment:** 3
+- **Student:** Yehong Hu (301392896)
+- **Semester:** 2023 Fall
 
-GitHub Pages publishes directly from the `main` branch root. The site is publicly accessible without setup at the live link above.
+---
 
-© 2026 Yehong Hu
+© 2023 Yehong Hu
