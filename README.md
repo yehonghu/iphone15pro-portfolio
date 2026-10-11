@@ -1,8 +1,22 @@
 # iPhone 15 Pro — Product Page
 
+[![CI](https://github.com/yehonghu/iphone15pro-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/yehonghu/iphone15pro-portfolio/actions/workflows/ci.yml)
+[![Last commit](https://img.shields.io/github/last-commit/yehonghu/iphone15pro-portfolio)](https://github.com/yehonghu/iphone15pro-portfolio/commits/main)
+
 A fully hand-coded Apple-style product landing page for the iPhone 15 Pro, built as a frontend portfolio project.
 
 **Live Demo:** [yehonghu.github.io/iphone15pro-portfolio](https://yehonghu.github.io/iphone15pro-portfolio)
+
+## Run locally
+
+No build step — it's pure HTML, CSS, and vanilla JS. Serve the folder with any static server:
+
+```bash
+python3 -m http.server 8080
+# then open http://localhost:8080
+```
+
+Or just open `index.html` directly in a browser.
 
 ---
 
@@ -24,6 +38,7 @@ A fully hand-coded Apple-style product landing page for the iPhone 15 Pro, built
 - Embedded video backgrounds and iPhone mockup video player
 - Lightbox image viewer with keyboard support
 - Collapsible spec accordion with SVG icons
+- Motion layer: hero parallax, animated stat counters, 3D card tilt, hover sheens — all respecting `prefers-reduced-motion`
 - Responsive layout for mobile and desktop
 - Pure HTML + CSS + Vanilla JS — zero dependencies
 

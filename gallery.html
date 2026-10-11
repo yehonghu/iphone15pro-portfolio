@@ -476,6 +476,75 @@
         .stagger-3 { transition-delay: 0.3s; }
         .stagger-4 { transition-delay: 0.4s; }
 
+        /* ===== Focus States (keyboard accessibility) ===== */
+        a:focus-visible,
+        button:focus-visible,
+        [role="button"]:focus-visible,
+        [tabindex]:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 3px;
+            border-radius: 6px;
+        }
+
+        /* ===== Delight: 3D tilt on finish cards (fine pointers only) ===== */
+        @media (hover: hover) and (pointer: fine) {
+            .color-card.tilt {
+                transform-style: preserve-3d;
+                will-change: transform;
+            }
+
+            .color-card.tilt img {
+                transform: translateZ(30px);
+            }
+
+            .color-card.tilt:hover img {
+                transform: translateZ(30px) scale(1.04);
+            }
+        }
+
+        /* ===== Delight: ambient glow behind hero ===== */
+        .gallery-hero {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-hero::before {
+            content: '';
+            position: absolute;
+            width: 50vmax;
+            height: 50vmax;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,113,227,0.12) 0%, transparent 60%);
+            top: -10vmax;
+            left: 50%;
+            margin-left: -25vmax;
+            animation: heroGlowDrift 16s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes heroGlowDrift {
+            from { transform: translateX(-8%) scale(1); }
+            to   { transform: translateX(8%) scale(1.15); }
+        }
+
+        /* ===== Reduced Motion ===== */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .fade-up {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
+            .gallery-hero::before { display: none; }
+        }
+
         /* ===== Responsive ===== */
         @media (max-width: 768px) {
             .colors-grid {
@@ -539,7 +608,7 @@
             <p class="section-body">Each color is crafted from aerospace-grade titanium, offering a unique character while sharing the same exceptional strength.</p>
         </div>
         <div class="colors-grid">
-            <div class="color-card fade-up stagger-1" onclick="openLightbox('image5.png')">
+            <div class="color-card tilt fade-up stagger-1" onclick="openLightbox(this, \'image5.png\')">
                 <img src="image5.png" alt="Black Titanium iPhone 15 Pro">
                 <div class="color-card-label">
                     <div class="color-card-name">
@@ -549,7 +618,7 @@
                     <div class="color-card-desc">Bold and sophisticated</div>
                 </div>
             </div>
-            <div class="color-card fade-up stagger-2" onclick="openLightbox('image6.png')">
+            <div class="color-card tilt fade-up stagger-2" onclick="openLightbox(this, \'image6.png\')">
                 <img src="image6.png" alt="White Titanium iPhone 15 Pro">
                 <div class="color-card-label">
                     <div class="color-card-name">
@@ -559,7 +628,7 @@
                     <div class="color-card-desc">Clean and luminous</div>
                 </div>
             </div>
-            <div class="color-card fade-up stagger-3" onclick="openLightbox('image7.png')">
+            <div class="color-card tilt fade-up stagger-3" onclick="openLightbox(this, \'image7.png\')">
                 <img src="image7.png" alt="Blue Titanium iPhone 15 Pro">
                 <div class="color-card-label">
                     <div class="color-card-name">
@@ -569,7 +638,7 @@
                     <div class="color-card-desc">Deep and expressive</div>
                 </div>
             </div>
-            <div class="color-card fade-up stagger-4" onclick="openLightbox('image9.png')">
+            <div class="color-card tilt fade-up stagger-4" onclick="openLightbox(this, \'image9.png\')">
                 <img src="image9.png" alt="Natural Titanium iPhone 15 Pro">
                 <div class="color-card-label">
                     <div class="color-card-name">
@@ -589,7 +658,7 @@
             <h2 class="section-title">All four, side by side.</h2>
             <p class="section-body" style="margin-bottom: 0">Four distinct expressions of the same Pro-grade titanium design.</p>
         </div>
-        <div class="all-colors-image fade-up stagger-1" onclick="openLightbox('image8.png')" style="cursor:pointer">
+        <div class="all-colors-image fade-up stagger-1" onclick="openLightbox(this, \'image8.png\')" style="cursor:pointer">
             <img src="image8.png" alt="All four iPhone 15 Pro colors">
         </div>
     </section>
@@ -597,7 +666,7 @@
     <!-- Camera Close-up -->
     <section class="camera-section">
         <div class="camera-inner">
-            <div class="camera-image fade-up" onclick="openLightbox('image.png')" style="cursor:pointer">
+            <div class="camera-image fade-up" onclick="openLightbox(this, \'image.png\')" style="cursor:pointer">
                 <img src="image.png" alt="iPhone 15 Pro camera system close-up">
             </div>
             <div class="camera-text fade-up stagger-2">
@@ -650,12 +719,12 @@
 
     <!-- Lightbox -->
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-        <button class="lightbox-close" onclick="closeLightbox()">
+        <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close image viewer">
             <svg viewBox="0 0 16 16" fill="none">
                 <path d="M3 3l10 10M13 3L3 13" stroke="white" stroke-width="2" stroke-linecap="round"/>
             </svg>
         </button>
-        <img class="lightbox-img" id="lightboxImg" src="" alt="">
+        <img class="lightbox-img" id="lightboxImg" alt="Enlarged gallery image">
     </div>
 
     <script>
@@ -669,8 +738,12 @@
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
         // Lightbox
-        function openLightbox(src) {
-            document.getElementById('lightboxImg').src = src;
+        function openLightbox(trigger, src) {
+            const img = document.getElementById('lightboxImg');
+            // Carry the trigger image's alt text over for screen readers
+            const triggerImg = trigger && trigger.querySelector ? trigger.querySelector('img') : null;
+            img.alt = (triggerImg && triggerImg.alt) ? triggerImg.alt : 'Enlarged gallery image';
+            img.src = src;
             document.getElementById('lightbox').classList.add('open');
             document.body.style.overflow = 'hidden';
         }
@@ -683,6 +756,40 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeLightbox();
         });
+
+        // Keyboard accessibility: make lightbox cards operable via Enter/Space
+        document.querySelectorAll('.color-card, .camera-image, .all-colors-image').forEach(el => {
+            el.setAttribute('role', 'button');
+            el.setAttribute('tabindex', '0');
+            if (!el.getAttribute('aria-label')) {
+                const img = el.querySelector('img');
+                el.setAttribute('aria-label', 'View enlarged image' + (img && img.alt ? ': ' + img.alt : ''));
+            }
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    el.click();
+                }
+            });
+        });
+
+        // Delight: subtle 3D tilt on finish cards (fine pointers, motion-safe)
+        const canTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+                        !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (canTilt) {
+            document.querySelectorAll('.color-card.tilt').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const r = card.getBoundingClientRect();
+                    const x = (e.clientX - r.left) / r.width - 0.5;
+                    const y = (e.clientY - r.top) / r.height - 0.5;
+                    card.style.transform = 'perspective(900px) rotateX(' + (-y * 6) + 'deg) rotateY(' + (x * 8) + 'deg) translateY(-8px)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                });
+            });
+        }
     </script>
 </body>
 </html>

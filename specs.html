@@ -325,6 +325,53 @@
             transform: translateY(0);
         }
 
+        /* ===== Focus States (keyboard accessibility) ===== */
+        a:focus-visible,
+        button:focus-visible,
+        [role="button"]:focus-visible,
+        [tabindex]:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 3px;
+            border-radius: 6px;
+        }
+
+        /* ===== Delight: spec row hover + header lift ===== */
+        .spec-group-header {
+            border-radius: 12px;
+            transition: background 0.25s ease, padding 0.25s ease;
+        }
+
+        .spec-group-header:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .spec-row {
+            border-radius: 10px;
+            transition: background 0.25s ease;
+        }
+
+        .spec-row:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* ===== Reduced Motion ===== */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .fade-up {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
+            .spec-group-body { transition: none; }
+        }
+
         @media (max-width: 600px) {
             .spec-row {
                 grid-template-columns: 1fr;
@@ -659,7 +706,22 @@
         function toggleGroup(header) {
             const group = header.parentElement;
             group.classList.toggle('open');
+            header.setAttribute('aria-expanded', String(group.classList.contains('open')));
         }
+
+        // Keyboard accessibility: accordion headers act as buttons
+        document.querySelectorAll('.spec-group-header').forEach(header => {
+            header.setAttribute('role', 'button');
+            header.setAttribute('tabindex', '0');
+            header.setAttribute('aria-expanded',
+                String(header.parentElement.classList.contains('open')));
+            header.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleGroup(header);
+                }
+            });
+        });
 
         // Scroll animations
         const observer = new IntersectionObserver((entries) => {

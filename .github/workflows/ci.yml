@@ -1,0 +1,36 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate HTML
+        run: |
+          npm install -g htmlhint
+          htmlhint "**/*.html"
+      - name: Check local assets
+        run: |
+          python3 - <<'EOF'
+          import re, os, sys
+          pages = ['index.html', 'gallery.html', 'picture.html', 'specs.html']
+          missing = []
+          for page in pages:
+              html = open(page, encoding='utf-8').read()
+              for m in re.findall(r'(?:src|href)="([^"#][^"]*)"', html):
+                  if m.startswith(('http://', 'https://')) or '#' in m:
+                      continue
+                  if not os.path.exists(m):
+                      missing.append(f"{page}: {m}")
+          if missing:
+              print("Missing local assets:")
+              print("\n".join(missing))
+              sys.exit(1)
+          print("All local assets OK")
+          EOF
